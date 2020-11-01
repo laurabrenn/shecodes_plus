@@ -1,0 +1,59 @@
+body {
+  max-width: 600px;
+  margin: 30px auto;
+  background-color: #fdfdfd;
+  font-weight: lighter;
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: lighter;
+  margin-bottom: 0;
+}
+h2 {
+  font-size: 18px;
+  font-weight: lighter;
+  line-height: normal;
+}
+.info p {
+  margin-bottom: 0;
+}
+.date {
+  font-weight: normal;
+}
+
+.far {
+  font-size: 50px;
+}
+
+.large-icon {
+  font-size: 130px;
+  color: rgb(255, 221, 29);
+}
+
+.forecast {
+  text-align: center;
+  font-weight: 300;
+}
+
+.today {
+  padding-bottom: 10px;
+}
+
+.large-icon-container {
+  padding: 0;
+}
+
+.percentages p {
+  text-align: right;
+  font-size: 14px;
+  margin: 0;
+}
+.temp-today {
+  font-size: 26px;
+  font-weight: normal;
+}
+.temp-high-low-today {
+  font-weight: normal;
+  font-size: 17px;
+}
