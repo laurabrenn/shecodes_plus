@@ -1,11 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Week 5</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+    <link rel="stylesheet" href="src/styles.css" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="https://kit.fontawesome.com/ebad00b0a5.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
-    
+    <div class="container">
+        <div class="card shadow p-3 mb-5 bg-white rounded">
+            <div class="card-body">
+                <form>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Enter a city" id="city-input"
+                            autocomplete="off" autofocus="on" />
+                        <input class="btn btn-secondary" type="submit" id="search-button" value="Search" />
+                        <input class="btn btn-success ml-2" type="button" id="location-button" value="Current" />
+                    </div>
+                </form>
+
+                <div class="row ml-2">
+                    <h1>
+                        Current weather in <span class="city"> </span>:
+                    </h1>
+                </div>
+                <div class="row ml-2">
+                    <h2>
+
+                    </h2>
+                </div>
+                <div class="row ml-2 today">
+                    <div class="col-3 large-icon-container">
+                        <i class="far fa-sun large-icon"></i>
+                    </div>
+                    <div class="col-5 info">
+                        <p class="date">Sunday October 4th</p>
+                        <p class="time">7.03pm</p>
+                        <p class="temp-today">°</p>
+                        <p>high <span class="temp-high-low-today"> °</span> low</p>
+
+                    </div>
+                    <div class="col-4 percentages">
+                        <p>
+                            <a href="#" id="celcius">°C</a> |
+                            <a href="#" id="fahrenheit">°F</a>
+                        </p>
+                        <p>
+                            Feels like: <span id="feels"> ° </span>
+                        </p>
+                        <p>
+                            Humidity: <span id="humidity"> % </span>
+                        </p>
+                        <p>
+                            Wind speed: <span id="wind"> m/s</span>
+                        </p>
+                    </div>
+                </div>
+                <div class="container forecast">
+                    <div class="row DOW">
+                        <div class="col">Mon</div>
+                        <div class="col">Tue</div>
+                        <div class="col">Wed</div>
+                        <div class="col">Thu</div>
+                        <div class="col">Fri</div>
+                    </div>
+                    <div class="row">
+                        <div class="col"><i class="far fa-sun"></i></div>
+                        <div class="col"><i class="far fa-sun"></i></div>
+                        <div class="col"><i class="far fa-sun"></i></div>
+                        <div class="col"><i class="far fa-sun"></i></div>
+                        <div class="col"><i class="far fa-sun"></i></div>
+                    </div>
+                    <div class="row temps">
+                        <div class="col">18° / 22°</div>
+                        <div class="col">22° / 24°</div>
+                        <div class="col">22° / 24°</div>
+                        <div class="col">22° / 24°</div>
+                        <div class="col">22° / 24°</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
+
+<script src="src/script.js" ;></script>
+
 </html>
