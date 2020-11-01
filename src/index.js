@@ -73,8 +73,8 @@ function makeUpdates(response) {
   document.querySelector("#wind") .innerHTML= `${Math.round(response.data.wind.speed)} m/s`;
 }
 
-function updateInputTemp() { 
-  
+function updateInputTemp(event) { 
+  event.preventDefault();
   let cityInput = (document.querySelector("#city-input")).value;
   search(cityInput)
 }
@@ -97,8 +97,9 @@ function updateLocationTemp(position) {
   axios.get(apiURL).then(makeUpdates)
 }
 
-function getPosition() {
-  navigator.geolocation.getCurrentPosition(updateLocationTemp)
+function getPosition(event) {
+event.preventDefault();
+navigator.geolocation.getCurrentPosition(updateLocationTemp)
 }
 
 
