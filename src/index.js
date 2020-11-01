@@ -71,6 +71,9 @@ function makeUpdates(response) {
   document.querySelector("#feels").innerHTML = `${Math.round(response.data.main.feels_like)}°`;
   document.querySelector("#humidity").innerHTML = `${Math.round(response.data.main.humidity)}%`;
   document.querySelector("#wind") .innerHTML= `${Math.round(response.data.wind.speed)} m/s`;
+  document.querySelector("#image").setAttribute("src",`http://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`);
+  document.querySelector("#image").setAttribute("alt",response.data.weather[0].description);
+  
 }
 
 function updateInputTemp(event) { 
