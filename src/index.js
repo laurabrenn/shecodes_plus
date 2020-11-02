@@ -1,5 +1,8 @@
-// challenge 1 add current date and time
-function updateTime(now) { 
+
+let apiKey = "cc994936908b08281fdf1a93f075f62a"
+
+
+function updateTime(now) {  //updates the current time to todays weather
 
   let days = [
   "Sunday",
@@ -58,10 +61,22 @@ time.innerHTML = currentTime;
 let now = new Date();
 updateTime(now)
 
-//update text and temps from location entered
 
+function formatWeekday(timestamp) { // formats a timestap to show a short weekday
+let date = new Date(timestamp)
+let days = [
+  "Sun",
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat",]
+  let day = days[date.getDay()]
+  return day
+}
 
-function makeUpdates(response) {
+function makeUpdates(response) { //makes the updates to todays weather
   celciusTemp = Math.round(response.data.main.temp)
   document.querySelector(".city").innerHTML = response.data.name;
   document.querySelector("h2").innerHTML = response.data.weather[0].main;
@@ -77,39 +92,24 @@ function makeUpdates(response) {
   
 }
 
-function updateInputTemp(event) { 
+function updateSearchTemp(event) { // takes the input from the search bar
   event.preventDefault();
   let cityInput = (document.querySelector("#city-input")).value;
   search(cityInput)
 }
 
-function search(city) {
+function search(city) { // searches for a city in the API
   let apiStart ="https://api.openweathermap.org/data/2.5/weather";
-  let apiKey = "cc994936908b08281fdf1a93f075f62a";
   let unit = "metric";
   let apiURL = `${apiStart}?q=${city}&appid=${apiKey}&units=${unit}`;
   axios.get(apiURL).then(makeUpdates)
 }
 
-function formatWeekday(timestamp) {
-let date = new Date(timestamp)
-let days = [
-  "Sun",
-  "Mon",
-  "Tue",
-  "Wed",
-  "Thu",
-  "Fri",
-  "Sat",]
-  let day = days[date.getDay()]
-  return day
-}
-
-function showWeeklyForecast(response) {
+function showWeeklyForecast(response) { // updates the daily forecast elements
   let forecastElement = document.querySelector("#forecast")
   forecastElement.innerHTML = null
   let forecast = null
-  
+  console.log(response)
   for (let index = 0; index < 6; index++) {
     forecast = response.data.daily[index];
     forecastElement.innerHTML += `<div class="col-2 forecast-day">
@@ -120,24 +120,26 @@ function showWeeklyForecast(response) {
   }
 }
 
-function updateLocationTemp(position) { 
+function updateLocationTemp(position) {  // takes current position and searches for it in API
+  console.log(position)
   let lat = position.coords.latitude;
   let lon = position.coords.longitude;
   let apiStart ="https://api.openweathermap.org/data/2.5/weather";
-  let apiKey = "cc994936908b08281fdf1a93f075f62a";
   let unit = "metric";
   let apiURL = `${apiStart}?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`;
   axios.get(apiURL).then(makeUpdates)
   console.log(lat, lon)
-  apiURL = `https://api.openweathermap.org/data/2.5/onecall?lat=33.441792&lon=-94.037689&exclude=hourly,minutely&appid=cc994936908b08281fdf1a93f075f62a&units=metric`
+  apiURL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${apiKey}&units=metric`
+  console.log(apiURL)
   axios.get(apiURL).then(showWeeklyForecast)
 }
 
-function getPosition(event) {
+function getPosition(event) { // gets current position as coors
   event.preventDefault();
   navigator.geolocation.getCurrentPosition(updateLocationTemp)
 }
-function showCelcius(event) {
+
+function showCelcius(event) { //turns current temp into celcius
   event.preventDefault()
   celcius.classList.add("active")
   fahrenheit.classList.remove("active")
@@ -145,7 +147,7 @@ function showCelcius(event) {
   tempElement.innerHTML = `${celciusTemp}°`
 }
 
-function showFahrenheit(event) {
+function showFahrenheit(event) { // turns current temp into fahrenheit
   event.preventDefault()
   celcius.classList.remove("active")
   fahrenheit.classList.add("active")
@@ -154,7 +156,7 @@ function showFahrenheit(event) {
   tempElement.innerHTML = `${Math.round(fahrenheitTemp)}°`
 }
 
-function connvertToFahrenheit(celciusTemp) {
+function connvertToFahrenheit(celciusTemp) { // converts a number from celcius to fahrenheit
   let fahrenheitTemp = (celciusTemp*9)/5+32;
   return fahrenheitTemp
 }
@@ -167,7 +169,7 @@ let fahrenheit = document.querySelector("#fahrenheit");
 fahrenheit.addEventListener("click", showFahrenheit);
 
 let searchButton = document.querySelector("form");
-searchButton.addEventListener("submit", updateInputTemp);
+searchButton.addEventListener("submit", updateSearchTemp);
 
 let locationButton = document.querySelector("#location-button");
 locationButton.addEventListener("click", getPosition);
