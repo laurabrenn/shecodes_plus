@@ -38,6 +38,18 @@ h2 {
 .forecast {
   text-align: center;
   font-weight: 300;
+  font-size: 12px;
+  padding: 0;
+}
+.forecast img {
+  width: 60px;
+  margin: 0 auto;
+}
+.forecast p {
+  margin: 0;
+}
+.forecast-day {
+  padding: 0;
 }
 
 .today {

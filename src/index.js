@@ -91,6 +91,35 @@ function search(city) {
   axios.get(apiURL).then(makeUpdates)
 }
 
+function formatWeekday(timestamp) {
+let date = new Date(timestamp)
+let days = [
+  "Sun",
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat",]
+  let day = days[date.getDay()]
+  return day
+}
+
+function showWeeklyForecast(response) {
+  let forecastElement = document.querySelector("#forecast")
+  forecastElement.innerHTML = null
+  let forecast = null
+  
+  for (let index = 0; index < 6; index++) {
+    forecast = response.data.daily[index];
+    forecastElement.innerHTML += `<div class="col-2 forecast-day">
+    <p>${formatWeekday(forecast.dt * 1000)}</p>
+    <img src="http://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png" alt="">
+    <p>${Math.round(forecast.temp.min)}° / ${Math.round(forecast.temp.max)}°</p>
+    </div>`
+  }
+}
+
 function updateLocationTemp(position) { 
   let lat = position.coords.latitude;
   let lon = position.coords.longitude;
@@ -99,6 +128,9 @@ function updateLocationTemp(position) {
   let unit = "metric";
   let apiURL = `${apiStart}?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`;
   axios.get(apiURL).then(makeUpdates)
+  console.log(lat, lon)
+  apiURL = `https://api.openweathermap.org/data/2.5/onecall?lat=33.441792&lon=-94.037689&exclude=hourly,minutely&appid=cc994936908b08281fdf1a93f075f62a&units=metric`
+  axios.get(apiURL).then(showWeeklyForecast)
 }
 
 function getPosition(event) {
