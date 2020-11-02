@@ -1,7 +1,7 @@
 
 let apiKey = "cc994936908b08281fdf1a93f075f62a"
 
-//FORMATTING
+
 function updateTime(now) {  //updates the current time to todays weather
 
   let days = [
@@ -57,6 +57,11 @@ let time = document.querySelector(".time");
 date.innerHTML = currentDate;
 time.innerHTML = currentTime;
 }
+
+let now = new Date();
+updateTime(now)
+
+
 function formatWeekday(timestamp) { // formats a timestap to show a short weekday
 let date = new Date(timestamp)
 let days = [
@@ -71,13 +76,7 @@ let days = [
   return day
 }
 
-let now = new Date();
-updateTime(now)
-
-
-
-//MAKE UPDATES
-function showWeatherToday(response) { //makes the updates to todays weather
+function makeUpdates(response) { //makes the updates to todays weather
   celciusTemp = Math.round(response.data.main.temp)
   document.querySelector(".city").innerHTML = response.data.name;
   document.querySelector("h2").innerHTML = response.data.weather[0].main;
@@ -93,10 +92,24 @@ function showWeatherToday(response) { //makes the updates to todays weather
   
 }
 
+function updateSearchTemp(event) { // takes the input from the search bar
+  event.preventDefault();
+  let cityInput = (document.querySelector("#city-input")).value;
+  search(cityInput)
+}
+
+function search(city) { // searches for a city in the API
+  let apiStart ="https://api.openweathermap.org/data/2.5/weather";
+  let unit = "metric";
+  let apiURL = `${apiStart}?q=${city}&appid=${apiKey}&units=${unit}`;
+  axios.get(apiURL).then(makeUpdates)
+}
+
 function showWeeklyForecast(response) { // updates the daily forecast elements
   let forecastElement = document.querySelector("#forecast")
   forecastElement.innerHTML = null
   let forecast = null
+  console.log(response)
   for (let index = 0; index < 6; index++) {
     forecast = response.data.daily[index];
     forecastElement.innerHTML += `<div class="col-2 forecast-day">
@@ -107,66 +120,35 @@ function showWeeklyForecast(response) { // updates the daily forecast elements
   }
 }
 
-//HANDLE BUTTONS
-function getSeachTerm(click) { // takes the input from the search bar
-  click.preventDefault();
-  let cityInput = (document.querySelector("#city-input")).value;
-  search(cityInput)
-}
-function getPosition(click) { // gets current position as coors
-  click.preventDefault();
-  navigator.geolocation.getCurrentPosition(extractCoords)
-}
-
-
-function updateLocationTemp(latitude, longitude) {  // takes current position and searches for it in API
-  let lat = latitude
-  let lon = longitude
+function updateLocationTemp(position) {  // takes current position and searches for it in API
+  console.log(position)
+  let lat = position.coords.latitude;
+  let lon = position.coords.longitude;
   let apiStart ="https://api.openweathermap.org/data/2.5/weather";
   let unit = "metric";
   let apiURL = `${apiStart}?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`;
-  axios.get(apiURL).then(showWeatherToday)
+  axios.get(apiURL).then(makeUpdates)
+  console.log(lat, lon)
   apiURL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${apiKey}&units=metric`
+  console.log(apiURL)
   axios.get(apiURL).then(showWeeklyForecast)
 }
 
-function search(city) { // searches for a city in the API
-  let apiStart ="https://api.openweathermap.org/data/2.5/weather";
-  let unit = "metric";
-  let apiURL = `${apiStart}?q=${city}&appid=${apiKey}&units=${unit}`;
-  axios.get(apiURL).then(getCoords)
+function getPosition(event) { // gets current position as coors
+  event.preventDefault();
+  navigator.geolocation.getCurrentPosition(updateLocationTemp)
 }
 
-// GET COORDINATES
-function getCoords(response) { // get coordinaties from search input
-  let lat = response.data.coord.lat
-  let lon = response.data.coord.lon
-  updateLocationTemp(lat, lon)
-}
-function extractCoords(position) { //get coordinates from current position
-  lat = position.coords.latitude
-  lon = position.coords.longitude
-updateLocationTemp(lat, lon)
-}
-
-
-
-
-
-
-
-//CONVERSION
-
-function showCelcius(click) { //turns current temp into celcius
-  click.preventDefault()
+function showCelcius(event) { //turns current temp into celcius
+  event.preventDefault()
   celcius.classList.add("active")
   fahrenheit.classList.remove("active")
   let tempElement = document.querySelector(".temp-today");
   tempElement.innerHTML = `${celciusTemp}°`
 }
 
-function showFahrenheit(click) { // turns current temp into fahrenheit
-  click.preventDefault()
+function showFahrenheit(event) { // turns current temp into fahrenheit
+  event.preventDefault()
   celcius.classList.remove("active")
   fahrenheit.classList.add("active")
   let tempElement = document.querySelector(".temp-today");
@@ -179,8 +161,6 @@ function connvertToFahrenheit(celciusTemp) { // converts a number from celcius t
   return fahrenheitTemp
 }
 
-
-//EVENT LISTENERS
 let celciusTemp = null
 let celcius = document.querySelector("#celcius");
 celcius.addEventListener("click", showCelcius);
@@ -189,7 +169,7 @@ let fahrenheit = document.querySelector("#fahrenheit");
 fahrenheit.addEventListener("click", showFahrenheit);
 
 let searchButton = document.querySelector("form");
-searchButton.addEventListener("submit", getSeachTerm);
+searchButton.addEventListener("submit", updateSearchTemp);
 
 let locationButton = document.querySelector("#location-button");
 locationButton.addEventListener("click", getPosition);
