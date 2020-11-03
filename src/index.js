@@ -87,7 +87,7 @@ function showWeatherToday(response) { //makes the updates to todays weather
   document.querySelector(".temp-high-low-today").innerHTML = `${currentLow}° / ${currentHigh}°`;
   document.querySelector("#feels").innerHTML = `${Math.round(today.feels_like)}°`;
   document.querySelector("#humidity").innerHTML = `${Math.round(today.humidity)}%`;
-  document.querySelector("#wind") .innerHTML= `${Math.round(today.wind_speed)} m/s`;
+  document.querySelector("#wind") .innerHTML= `${Math.round(today.wind_speed)}`;
   document.querySelector("#image").setAttribute("src",`https://openweathermap.org/img/wn/${today.weather[0].icon}@2x.png`);
   document.querySelector("#image").setAttribute("alt",today.weather[0].description);
   
@@ -162,6 +162,8 @@ function showCelcius(click) { //turns current temp into celcius
   celcius.classList.add("active")
   fahrenheit.classList.remove("active")
   unit = "metric"
+  let windUnit =document.querySelector("#wind-units")
+  windUnit.innerHTML = "m/s"
   search(city)
 }
 
@@ -170,6 +172,8 @@ function showFahrenheit(click) { // turns current temp into fahrenheit
   celcius.classList.remove("active")
   fahrenheit.classList.add("active")
   unit = "imperial"
+  let windUnit =document.querySelector("#wind-units")
+  windUnit.innerHTML = "mph"
   search(city)
 }
 
