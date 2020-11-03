@@ -30,11 +30,6 @@ h2 {
   font-size: 50px;
 }
 
-.large-icon {
-  font-size: 130px;
-  color: rgb(255, 221, 29);
-}
-
 .forecast {
   text-align: center;
   font-weight: 300;
@@ -42,8 +37,10 @@ h2 {
   padding: 0;
   margin: 0;
 }
-.forecast img {
-  width: 60px;
+.forecast img,
+#image {
+  max-width: 100%;
+  max-height: 100%;
   margin: 0 auto;
 }
 .forecast p {
