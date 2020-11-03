@@ -162,6 +162,7 @@ function showCelcius(click) { //turns current temp into celcius
   celcius.classList.add("active")
   fahrenheit.classList.remove("active")
   unit = "metric"
+  search(city)
 }
 
 function showFahrenheit(click) { // turns current temp into fahrenheit
@@ -169,6 +170,7 @@ function showFahrenheit(click) { // turns current temp into fahrenheit
   celcius.classList.remove("active")
   fahrenheit.classList.add("active")
   unit = "imperial"
+  search(city)
 }
 
 
