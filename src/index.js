@@ -77,18 +77,19 @@ updateTime(now)
 
 //MAKE UPDATES
 function showWeatherToday(response) { //makes the updates to todays weather
-  celciusTemp = Math.round(response.data.main.temp)
-  document.querySelector(".city").innerHTML = response.data.name;
-  document.querySelector("h2").innerHTML = response.data.weather[0].main;
-  document.querySelector(".temp-today").innerHTML = `${Math.round(response.data.main.temp)}°`;
-  let currentLow = Math.round(response.data.main.temp_min);
-  let currentHigh = Math.round(response.data.main.temp_max);
+  let today = response.data.current
+  celciusTemp = Math.round(today.temp)
+  document.querySelector(".city").innerHTML = city
+  document.querySelector("h2").innerHTML = today.weather[0].main;
+  document.querySelector(".temp-today").innerHTML = `${Math.round(today.temp)}°`;
+  let currentLow = Math.round(response.data.daily[0].temp.min);
+  let currentHigh = Math.round(response.data.daily[0].temp.max);
   document.querySelector(".temp-high-low-today").innerHTML = `${currentLow}° / ${currentHigh}°`;
-  document.querySelector("#feels").innerHTML = `${Math.round(response.data.main.feels_like)}°`;
-  document.querySelector("#humidity").innerHTML = `${Math.round(response.data.main.humidity)}%`;
-  document.querySelector("#wind") .innerHTML= `${Math.round(response.data.wind.speed)} m/s`;
-  document.querySelector("#image").setAttribute("src",`https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`);
-  document.querySelector("#image").setAttribute("alt",response.data.weather[0].description);
+  document.querySelector("#feels").innerHTML = `${Math.round(today.feels_like)}°`;
+  document.querySelector("#humidity").innerHTML = `${Math.round(today.humidity)}%`;
+  document.querySelector("#wind") .innerHTML= `${Math.round(today.wind_speed)} m/s`;
+  document.querySelector("#image").setAttribute("src",`https://openweathermap.org/img/wn/${today.weather[0].icon}@2x.png`);
+  document.querySelector("#image").setAttribute("alt",today.weather[0].description);
   
 }
 
@@ -96,11 +97,11 @@ function showWeeklyForecast(response) { // updates the daily forecast elements
   let forecastElement = document.querySelector("#forecast")
   forecastElement.innerHTML = null
   let forecast = null
-  for (let index = 0; index < 6; index++) {
+  for (let index = 1; index < 7; index++) {
     forecast = response.data.daily[index];
     forecastElement.innerHTML += `<div class="col-2 forecast-day">
     <p>${formatWeekday(forecast.dt * 1000)}</p>
-    <img src="http://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png" alt="">
+    <img src="https://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png" alt="">
     <p>${Math.round(forecast.temp.min)}° / ${Math.round(forecast.temp.max)}°</p>
     </div>`
   }
@@ -119,34 +120,35 @@ function extractCoords(position) { //get coordinates from current position
   lon = position.coords.longitude
 updateLocationTemp(lat, lon)
 }
+function getCity(response) {
+  city = response.data.name
+  return city
+}
 
 
 //API REQUESTS
 function updateLocationTemp(latitude, longitude) {  // takes current position and searches for it in API
   let lat = latitude
   let lon = longitude
-  let apiStart ="https://api.openweathermap.org/data/2.5/weather";
-  let unit = "metric";
-  let apiURL = `${apiStart}?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${unit}`;
+  apiURL = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}`
+  axios.get(apiURL).then(getCity)
+  apiURL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${apiKey}&units=${unit}`
   axios.get(apiURL).then(showWeatherToday)
-  apiURL = `https://api.openweathermap.org/data/2.5/onecall?lat=${lat}&lon=${lon}&exclude=hourly,minutely&appid=${apiKey}&units=metric`
   axios.get(apiURL).then(showWeeklyForecast)
 }
 
-function search(city) { // searches for a city in the API
-  let apiStart ="https://api.openweathermap.org/data/2.5/weather";
-  let unit = "metric";
-  let apiURL = `${apiStart}?q=${city}&appid=${apiKey}&units=${unit}`;
+function search(city) { // searches for a city in the weather API 
+  let apiURL = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${unit}`;
   axios.get(apiURL).then(getCoords)
 }
 
 //HANDLE BUTTONS
-function getSeachTerm(click) { // takes the input from the search bar
+function getSeachTerm(click) { // gets search input
   click.preventDefault();
   let cityInput = (document.querySelector("#city-input")).value;
   search(cityInput)
 }
-function getPosition(click) { // gets current position as coors
+function getPosition(click) { // gets current position
   click.preventDefault();
   navigator.geolocation.getCurrentPosition(extractCoords)
 }
@@ -159,27 +161,23 @@ function showCelcius(click) { //turns current temp into celcius
   click.preventDefault()
   celcius.classList.add("active")
   fahrenheit.classList.remove("active")
-  let tempElement = document.querySelector(".temp-today");
-  tempElement.innerHTML = `${celciusTemp}°`
+  unit = "metric"
 }
 
 function showFahrenheit(click) { // turns current temp into fahrenheit
   click.preventDefault()
   celcius.classList.remove("active")
   fahrenheit.classList.add("active")
-  let tempElement = document.querySelector(".temp-today");
-  let fahrenheitTemp = connvertToFahrenheit(celciusTemp)
-  tempElement.innerHTML = `${Math.round(fahrenheitTemp)}°`
+  unit = "imperial"
 }
 
-function connvertToFahrenheit(celciusTemp) { // converts a number from celcius to fahrenheit
-  let fahrenheitTemp = (celciusTemp*9)/5+32;
-  return fahrenheitTemp
-}
+
 
 
 //EVENT LISTENERS
+let city = null
 let celciusTemp = null
+let unit = "metric"
 let celcius = document.querySelector("#celcius");
 celcius.addEventListener("click", showCelcius);
 
